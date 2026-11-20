@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>SAYI AVCISI | Profesyonel Sayı Tahmin Oyunu</title>
+  <meta name="description" content="SAYI AVCISI - Zeka ve sezgilerinizi test eden modern, animasyonlu ve ödüllü sayı tahmin oyunu. Yapan: Emir Yaşar Kendir">
+  <meta name="author" content="Emir Yaşar Kendir">
+  <meta name="theme-color" content="#0d1117">
+
+  <!-- Favicon SVG -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎯</text></svg>">
+
+  <!-- Google Fonts: Orbitron & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Hareketli Arka Plan Canvas Katmanı -->
+  <canvas id="bg-canvas"></canvas>
+  <div class="bg-vignette"></div>
+
+  <!-- Konfeti & Efekt Canvas Katmanı -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <div id="app" class="app-container">
+
+    <!-- ÜST BİLGİ VE YAPIMCI ALANI -->
+    <header class="app-header">
+      <div class="creator-badge">
+        <span class="badge-icon">👑</span>
+        <span class="badge-text">Yapan: <strong>Emir Yaşar Kendir</strong></span>
+      </div>
+
+      <div class="quick-header-actions">
+        <button id="btn-quick-sound" class="icon-btn" title="Sesi Aç/Kapat" aria-label="Sesi Aç/Kapat">
+          <span class="sound-icon">🔊</span>
+        </button>
+        <button id="btn-quick-theme" class="icon-btn" title="Hızlı Mağaza" aria-label="Arka Plan Mağazası">
+          <span>🎨</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- BÜYÜK VE ANİMASYONLU BAŞLIK -->
+    <div class="title-section">
+      <div class="title-badge">ZİHİN & TAHMİN MÜCADELESİ</div>
+      <h1 class="main-title glitch-effect" data-text="SAYI AVCISI">
+        SAYI AVCISI
+      </h1>
+      <p class="title-sub">Hedefi Bul, Rekoru Kır, Özel Arka Planları Topla!</p>
+    </div>
+
+    <!-- ==================== 1. ANA MENÜ EKRANI ==================== -->
+    <main id="menu-screen" class="view-screen active">
+      <!-- 1. OYNA BUTONU -->
+      <div class="hero-action-wrapper">
+        <button id="btn-start-game" class="btn btn-primary pulse-btn">
+          <span class="btn-icon">⚡</span>
+          <span class="btn-text">HEMEN OYNA</span>
+          <span class="btn-shine"></span>
+        </button>
+      </div>
+
+      <!-- 2. NASIL OYNANIR VE 3. AYARLAR BÖLÜMÜ -->
+      <div class="menu-nav-buttons main-menu-actions">
+        <button id="btn-open-how-to" class="btn btn-secondary glass-btn">
+          <span class="btn-icon">📖</span>
+          <span class="btn-text">NASIL OYNANIR</span>
+        </button>
+
+        <button id="btn-open-settings" class="btn btn-secondary glass-btn">
+          <span class="btn-icon">⚙️</span>
+          <span class="btn-text">AYARLAR & MAĞAZA</span>
+        </button>
+      </div>
+
+      <!-- 4. ZORLUK SEVİYESİ VE SAYI ARALIĞI BÖLÜMÜ -->
+      <section class="menu-card glass-panel">
+        <div class="panel-header">
+          <div class="panel-title-wrapper">
+            <span class="panel-icon">🎯</span>
+            <h2>ZORLUK SEVİYESİ VE SAYI ARALIĞI</h2>
+          </div>
+          <span class="panel-tag">Zorluk Seç</span>
+        </div>
+
+        <div class="difficulty-grid" role="radiogroup" aria-label="Zorluk Seviyesi Seçimi">
+          <!-- Kolay -->
+          <div class="diff-card" data-diff="kolay" tabindex="0">
+            <div class="diff-icon">🌱</div>
+            <div class="diff-info">
+              <span class="diff-name">Kolay</span>
+              <span class="diff-range">1 - 50</span>
+              <span class="diff-attempts">Sınırsız Tahmin</span>
+            </div>
+            <div class="diff-badge">Başlangıç</div>
+          </div>
+
+          <!-- Orta (Varsayılan) -->
+          <div class="diff-card selected" data-diff="orta" tabindex="0">
+            <div class="diff-icon">⚔️</div>
+            <div class="diff-info">
+              <span class="diff-name">Orta</span>
+              <span class="diff-range">1 - 100</span>
+              <span class="diff-attempts">10 Tahmin Hakkı</span>
+            </div>
+            <div class="diff-badge star">Popüler</div>
+          </div>
+
+          <!-- Zor -->
+          <div class="diff-card" data-diff="zor" tabindex="0">
+            <div class="diff-icon">🔥</div>
+            <div class="diff-info">
+              <span class="diff-name">Zor</span>
+              <span class="diff-range">1 - 500</span>
+              <span class="diff-attempts">9 Tahmin Hakkı</span>
+            </div>
+            <div class="diff-badge hard">Usta</div>
+          </div>
+
+          <!-- Efsane -->
+          <div class="diff-card" data-diff="efsane" tabindex="0">
+            <div class="diff-icon">👑</div>
+            <div class="diff-info">
+              <span class="diff-name">Efsane</span>
+              <span class="diff-range">1 - 1000</span>
+              <span class="diff-attempts">8 Tahmin Hakkı</span>
+            </div>
+            <div class="diff-badge legend">Uzman</div>
+          </div>
+
+          <!-- Özel Aralık -->
+          <div class="diff-card custom-card" data-diff="ozel" tabindex="0">
+            <div class="diff-icon">⚙️</div>
+            <div class="diff-info">
+              <span class="diff-name">Özel Aralık</span>
+              <span class="diff-range" id="custom-range-summary">Kendi Aralığın</span>
+              <span class="diff-attempts" id="custom-attempts-summary">İsteğe Bağlı</span>
+            </div>
+            <div class="diff-badge">Serbest</div>
+          </div>
+        </div>
+
+        <!-- Özel Aralık Ayar Alanı (Açılır Kapanır) -->
+        <div id="custom-range-box" class="custom-range-box hidden">
+          <div class="custom-inputs-row">
+            <div class="input-field">
+              <label for="custom-min">Min Sayı</label>
+              <input type="number" id="custom-min" value="1" min="1" max="99999">
+            </div>
+            <div class="input-field">
+              <label for="custom-max">Max Sayı</label>
+              <input type="number" id="custom-max" value="200" min="2" max="100000">
+            </div>
+            <div class="input-field">
+              <label for="custom-attempts">Tahmin Hakkı (0 = Sınırsız)</label>
+              <input type="number" id="custom-attempts" value="10" min="0" max="99">
+            </div>
+          </div>
+          <p class="custom-hint">💡 Özel aralıkta da rekorların ayrı tutulur!</p>
+        </div>
+
+        <!-- Seçili Zorluğun Rekor Özeti -->
+        <div class="current-record-strip">
+          <div class="record-badge-left">
+            <span>🏆 Seçili Modun En İyi Rekoru:</span>
+            <strong id="menu-current-record">Henüz Yok (- tahminde)</strong>
+          </div>
+          <div class="record-tokens-pill" id="header-tokens-pill">
+            <span>🎁 Kilit Açma Jetonu:</span>
+            <strong id="menu-tokens-count">0</strong>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ==================== 2. OYUN EKRANI ==================== -->
+    <section id="game-screen" class="view-screen">
+      <!-- Oyun Başlık Çubuğu -->
+      <div class="game-top-bar glass-panel">
+        <button id="btn-back-to-menu" class="btn-icon-label" title="Ana Menüye Dön">
+          <span>◀</span>
+          <span>Menü</span>
+        </button>
+
+        <div class="game-meta-pills">
+          <div class="meta-pill">
+            <span class="pill-label">Zorluk:</span>
+            <span class="pill-value" id="game-diff-label">Orta</span>
+          </div>
+          <div class="meta-pill">
+            <span class="pill-label">Aralık:</span>
+            <span class="pill-value highlight" id="game-range-label">1 - 100</span>
+          </div>
+          <div class="meta-pill">
+            <span class="pill-label">Kalan Hak:</span>
+            <span class="pill-value hearts" id="game-attempts-label">10</span>
+          </div>
+          <div class="meta-pill">
+            <span class="pill-label">Rekor:</span>
+            <span class="pill-value" id="game-record-label">-</span>
+          </div>
+        </div>
+
+        <button id="btn-restart-game" class="btn-icon-label" title="Yeniden Başlat">
+          <span>🔄</span>
+          <span>Yeniden</span>
+        </button>
+      </div>
+
+      <!-- Ana Oyun Kartı -->
+      <div class="game-main-card glass-panel">
+        
+        <!-- Dinamik Aralık Daralma Radarı -->
+        <div class="range-radar-container">
+          <div class="radar-bounds">
+            <span id="radar-min-bound" class="bound-tag">1</span>
+            <span class="bound-center-text">İpuçlarıyla daralan aralık</span>
+            <span id="radar-max-bound" class="bound-tag">100</span>
+          </div>
+          <div class="radar-bar-track">
+            <div id="radar-active-range" class="radar-bar-fill"></div>
+          </div>
+        </div>
+
+        <!-- Büyük İpucu & Durum Ekranı -->
+        <div id="feedback-display" class="feedback-display idle">
+          <div class="feedback-icon" id="feedback-icon">🎯</div>
+          <div class="feedback-message" id="feedback-text">
+            Aklımdan bir sayı tuttum. Tahminini gir ve avı başlat!
+          </div>
+        </div>
+
+        <!-- Tahmin Giriş Alanı -->
+        <form id="guess-form" class="guess-form" autocomplete="off" onsubmit="return false;">
+          <div class="input-wrap">
+            <input 
+              type="number" 
+              id="guess-input" 
+              class="guess-input" 
+              placeholder="Sayı girin..." 
+              min="1" 
+              step="1"
+              inputmode="numeric"
+              required
+            >
+            <button type="submit" id="btn-submit-guess" class="btn btn-primary submit-btn">
+              <span>TAHMİN ET</span>
+              <span class="enter-icon">↵</span>
+            </button>
+          </div>
+        </form>
+
+        <!-- Hızlı Sayı Ekleme / Düzeltme Butonları (Mobil Dostu) -->
+        <div class="quick-numpad-row">
+          <button type="button" class="btn-chip" data-delta="-10">-10</button>
+          <button type="button" class="btn-chip" data-delta="-1">-1</button>
+          <button type="button" class="btn-chip btn-chip-clear" id="btn-chip-clear">Temizle</button>
+          <button type="button" class="btn-chip" data-delta="+1">+1</button>
+          <button type="button" class="btn-chip" data-delta="+10">+10</button>
+        </div>
+
+        <!-- Geçmiş Tahminler Bölümü -->
+        <div class="history-section">
+          <div class="history-header">
+            <span class="history-title">Önceki Tahminlerin</span>
+            <span class="history-count" id="history-count">0 Tahmin</span>
+          </div>
+          <div id="history-list" class="history-list">
+            <div class="history-empty">Henüz bir tahmin yapmadın.</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== 3. NASIL OYNANIR MODALI ==================== -->
+    <div id="modal-how-to" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="how-to-title">
+      <div class="modal-card glass-panel scale-up">
+        <div class="modal-header">
+          <div class="modal-title-wrap">
+            <span class="modal-icon">📖</span>
+            <h2 id="how-to-title">NASIL OYNANIR?</h2>
+          </div>
+          <button class="modal-close-btn" data-close="modal-how-to" aria-label="Kapat">&times;</button>
+        </div>
+
+        <div class="modal-body tutorial-content">
+          <div class="tutorial-step">
+            <div class="step-num">1</div>
+            <div class="step-details">
+              <h3>Zorluk ve Aralık Seçimi</h3>
+              <p>Kolay, Orta, Zor, Efsane seviyelerinden birini seç veya kendi özel sayı aralığını belirle. Her zorluğun rekoru ayrı saklanır!</p>
+            </div>
+          </div>
+
+          <div class="tutorial-step">
+            <div class="step-num">2</div>
+            <div class="step-details">
+              <h3>Gizli Sayıyı Yakala</h3>
+              <p>Bilgisayar seçilen aralıkta gizli bir sayı tutar. Bir tahminde bulunduğunda sistem seni yönlendirir:</p>
+              <ul class="rule-chips">
+                <li class="chip up">⬆️ "Daha yüksek!" (Tuttuğum sayı girdiğinden BÜYÜK)</li>
+                <li class="chip down">⬇️ "Daha düşük!" (Tuttuğum sayı girdiğinden KÜÇÜK)</li>
+                <li class="chip win">🎯 "TEBRİKLER! SAYIYI BULDUN!"</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="tutorial-step">
+            <div class="step-num">3</div>
+            <div class="step-details">
+              <h3>Akıllı Hamleler & Can Koruması</h3>
+              <p>Daha önce denediğin bir sayıyı tekrar yazarsan veya aralık dışı geçersiz bir sayı girersen <strong>hakkın eksilmez!</strong></p>
+            </div>
+          </div>
+
+          <div class="tutorial-step">
+            <div class="step-num">4</div>
+            <div class="step-details">
+              <h3>Rekor Kır & Arka Planları Topla</h3>
+              <p>Mevcut rekorunu daha az tahminle geçtiğin her seferde <strong>1 Kilit Açma Jetonu</strong> kazanırsın! Bu jetonlarla Mağaza'daki 15 muhteşem hareketli arka planın kilidini açabilirsin.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-primary" data-close="modal-how-to">Anladım, Haydi Oynayalım!</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 4. AYARLAR VE ARKA PLAN MAĞAZASI MODALI ==================== -->
+    <div id="modal-settings" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+      <div class="modal-card modal-wide glass-panel scale-up">
+        
+        <div class="modal-header">
+          <div class="modal-tabs">
+            <button class="modal-tab-btn active" data-tab="tab-store">
+              <span>🎨</span> Arka Plan Mağazası
+            </button>
+            <button class="modal-tab-btn" data-tab="tab-settings">
+              <span>⚙️</span> Ses & Tercihler
+            </button>
+          </div>
+          <button class="modal-close-btn" data-close="modal-settings" aria-label="Kapat">&times;</button>
+        </div>
+
+        <div class="modal-body">
+          
+          <!-- SEKME 1: ARKA PLAN MAĞAZASI -->
+          <div id="tab-store" class="tab-pane active">
+            
+            <div class="store-hero-banner">
+              <div class="store-hero-left">
+                <h3>Hareketli Arka Plan Koleksiyonu</h3>
+                <p>Oyun ortamını dilediğin gibi özelleştir. Her biri 60 FPS akıcı animasyonludur.</p>
+              </div>
+              <div class="store-tokens-display">
+                <span class="token-icon">🏆</span>
+                <div class="token-info">
+                  <span class="token-label">Kilit Açma Jetonun:</span>
+                  <strong id="store-tokens-count" class="token-number">0</strong>
+                </div>
+              </div>
+            </div>
+
+            <!-- DÜZ ARKA PLAN RENK SEÇİCİ (Ücretsiz) -->
+            <div class="custom-color-picker-box glass-panel-inner">
+              <div class="picker-info">
+                <span class="picker-icon">🖌️</span>
+                <div>
+                  <strong>Özel Düz Renk Seçici (Ücretsiz)</strong>
+                  <p>İstediğin herhangi bir arka plan rengini seç ve anında uygula.</p>
+                </div>
+              </div>
+              <div class="picker-controls">
+                <input type="color" id="custom-color-input" value="#0d1117" aria-label="Özel Arka Plan Rengi">
+                <button id="btn-apply-custom-color" class="btn btn-small">Rengi Uygula</button>
+              </div>
+            </div>
+
+            <!-- 15 HAREKETLİ ARKA PLAN LİSTESİ -->
+            <div class="store-grid" id="store-theme-grid">
+              <!-- JavaScript dinamik olarak 15 kartı buraya ekleyecek -->
+            </div>
+
+            <!-- Kullanıcının istediği zorunlu alt yazı -->
+            <div class="store-footer-callout">
+              <p>🏆 Önceki skorunu geç, yeni rekor kır ve istediğin bir hareketli arka planın kilidini aç!</p>
+            </div>
+          </div>
+
+          <!-- SEKME 2: GENEL AYARLAR -->
+          <div id="tab-settings" class="tab-pane">
+            
+            <div class="settings-group glass-panel-inner">
+              <h4 class="settings-group-title">🎵 Ses Ayarları</h4>
+              
+              <!-- Müzik Sesi -->
+              <div class="setting-row">
+                <div class="setting-label">
+                  <span>Müzik Sesi (Ambient Synth)</span>
+                  <small id="music-volume-val">%40</small>
+                </div>
+                <div class="setting-control">
+                  <input type="range" id="setting-music-vol" min="0" max="100" value="40" class="styled-slider">
+                </div>
+              </div>
+
+              <!-- Efekt Sesi -->
+              <div class="setting-row">
+                <div class="setting-label">
+                  <span>Efekt Sesi (SFX)</span>
+                  <small id="sfx-volume-val">%70</small>
+                </div>
+                <div class="setting-control">
+                  <input type="range" id="setting-sfx-vol" min="0" max="100" value="70" class="styled-slider">
+                </div>
+              </div>
+
+              <!-- Tüm Sesleri Kapat -->
+              <div class="setting-row">
+                <div class="setting-label">
+                  <span>Tüm Sesleri Sustur</span>
+                  <small>Müzik ve tüm ses efektlerini kapatır</small>
+                </div>
+                <div class="setting-control">
+                  <label class="switch">
+                    <input type="checkbox" id="setting-mute-toggle">
+                    <span class="slider round"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="settings-group glass-panel-inner">
+              <h4 class="settings-group-title">⚡ Görsel & Performans</h4>
+              
+              <!-- Animasyonları Aç/Kapat -->
+              <div class="setting-row">
+                <div class="setting-label">
+                  <span>Hareketli Arka Plan Animasyonları</span>
+                  <small>Düşük performanslı cihazlar için kapatılabilir</small>
+                </div>
+                <div class="setting-control">
+                  <label class="switch">
+                    <input type="checkbox" id="setting-anim-toggle" checked>
+                    <span class="slider round"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="settings-group glass-panel-inner">
+              <h4 class="settings-group-title">📊 Oyun İstatistikleri & Veri</h4>
+              <div class="stats-table">
+                <div class="stat-item">
+                  <span class="stat-num" id="stat-played">0</span>
+                  <span class="stat-desc">Oynanan Oyun</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-num" id="stat-won">0</span>
+                  <span class="stat-desc">Kazanılan Zafer</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-num" id="stat-unlocked">3/15</span>
+                  <span class="stat-desc">Açılan Arka Plan</span>
+                </div>
+              </div>
+              <div class="data-reset-row">
+                <button id="btn-reset-data" class="btn btn-danger-outline btn-small">
+                  🗑️ Verileri Sıfırla (Rekorlar & Temalar)
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-close="modal-settings">Kapat</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 5. ZAFER & REKOR MODALI ==================== -->
+    <div id="modal-victory" class="modal-overlay hidden" role="dialog" aria-modal="true">
+      <div class="modal-card victory-card glass-panel bounce-in">
+        <div class="victory-header">
+          <div class="victory-trophy" id="victory-trophy-icon">🏆</div>
+          <h2 id="victory-title" class="victory-title">TEBRİKLER! SAYIYI BULDUN!</h2>
+          <p id="victory-subtitle" class="victory-subtitle">Harika bir tahmin yeteneği!</p>
+        </div>
+
+        <div class="victory-body">
+          <div class="secret-reveal-box">
+            <span class="secret-label">Gizli Sayı:</span>
+            <span class="secret-number" id="reveal-number">42</span>
+          </div>
+
+          <div class="victory-stats-row">
+            <div class="v-stat">
+              <span class="v-stat-val" id="reveal-guesses">5</span>
+              <span class="v-stat-label">Tahmin Sayısı</span>
+            </div>
+            <div class="v-stat">
+              <span class="v-stat-val" id="reveal-best">5</span>
+              <span class="v-stat-label">En İyi Skorun</span>
+            </div>
+          </div>
+
+          <!-- YENİ REKOR ÖDÜL BANNERI (Yalnızca rekor geçildiğinde açılır) -->
+          <div id="victory-record-banner" class="record-reward-banner hidden">
+            <div class="reward-sparkle">✨</div>
+            <div class="reward-content">
+              <strong>YENİ REKOR KIRDIN! 🥇</strong>
+              <p id="reward-text">Eski rekorunu geliştirdin ve 1 Arka Plan Kilit Açma Hakkı kazandın!</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="victory-actions">
+          <button id="btn-victory-store" class="btn btn-secondary hidden">
+            <span>🎨</span> Mağazadan Arka Plan Aç!
+          </button>
+          <button id="btn-victory-play-again" class="btn btn-primary pulse-btn">
+            <span>🔄</span> Yeniden Oyna
+          </button>
+          <button id="btn-victory-menu" class="btn btn-outline">
+            <span>🏠</span> Ana Menü
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 6. OYUN BİTTİ (KAYBETTİN) MODALI ==================== -->
+    <div id="modal-gameover" class="modal-overlay hidden" role="dialog" aria-modal="true">
+      <div class="modal-card gameover-card glass-panel shake-anim">
+        <div class="gameover-header">
+          <div class="gameover-icon">💔</div>
+          <h2 class="gameover-title">HAKLARIN TÜKENDİ!</h2>
+          <p class="gameover-subtitle">Pes etmek yok, bir sonraki oyunda sayıyı yakalayacaksın!</p>
+        </div>
+
+        <div class="gameover-body">
+          <div class="secret-reveal-box fail">
+            <span class="secret-label">Aklımdaki Sayı Şuydu:</span>
+            <span class="secret-number" id="gameover-reveal-number">?</span>
+          </div>
+          <p class="gameover-tip">💡 İpucu: Her tahminde aralığın tam ortasını hedefleyerek ikili arama (Binary Search) mantığıyla daha hızlı bulabilirsin!</p>
+        </div>
+
+        <div class="gameover-actions">
+          <button id="btn-gameover-retry" class="btn btn-primary pulse-btn">
+            <span>🔄</span> Tekrar Dene
+          </button>
+          <button id="btn-gameover-menu" class="btn btn-outline">
+            <span>🏠</span> Ana Menü
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ALT BİLGİ (FOOTER) -->
+    <footer class="app-footer">
+      <p>SAYI AVCISI &copy; 2026 &bull; Hazırlayan: <strong>Emir Yaşar Kendir</strong> &bull; Tüm Hakları Saklıdır.</p>
+    </footer>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
